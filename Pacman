@@ -1,0 +1,110 @@
+import turtle
+import time
+import random
+
+# Setup screen
+win = turtle.Screen()
+win.bgcolor("black")
+win.title("Simple Pac-Man")
+win.setup(width=600, height=600)
+win.tracer(0)
+
+# Create border
+border_pen = turtle.Turtle()
+border_pen.speed(0)
+border_pen.color("blue")
+border_pen.penup()
+border_pen.goto(-290, 290)
+border_pen.pendown()
+for _ in range(4):
+    border_pen.forward(580)
+    border_pen.right(90)
+border_pen.hideturtle()
+
+# Pac-Man setup
+pacman = turtle.Turtle()
+pacman.shape("circle")
+pacman.color("yellow")
+pacman.penup()
+pacman.speed(0)
+pacman.goto(0, 0)
+pacman.direction = "stop"
+
+# Ghost setup
+ghost = turtle.Turtle()
+ghost.shape("square")
+ghost.color("red")
+ghost.penup()
+ghost.speed(0)
+ghost.goto(100, 100)
+
+# Food setup
+food = turtle.Turtle()
+food.shape("circle")
+food.color("white")
+food.penup()
+food.speed(0)
+food.goto(random.randint(-280, 280), random.randint(-280, 280))
+
+# Movement functions
+def go_up():
+    pacman.direction = "up"
+
+def go_down():
+    pacman.direction = "down"
+
+def go_left():
+    pacman.direction = "left"
+
+def go_right():
+    pacman.direction = "right"
+
+def move():
+    if pacman.direction == "up":
+        y = pacman.ycor()
+        pacman.sety(y + 20)
+    if pacman.direction == "down":
+        y = pacman.ycor()
+        pacman.sety(y - 20)
+    if pacman.direction == "left":
+        x = pacman.xcor()
+        pacman.setx(x - 20)
+    if pacman.direction == "right":
+        x = pacman.xcor()
+        pacman.setx(x + 20)
+
+# Keyboard bindings
+win.listen()
+win.onkey(go_up, "w")
+win.onkey(go_down, "s")
+win.onkey(go_left, "a")
+win.onkey(go_right, "d")
+
+# Main game loop
+while True:
+    win.update()
+    move()
+
+    # Ghost movement (simple random AI)
+    move_dir = random.choice(["up", "down", "left", "right"])
+    if move_dir == "up":
+        ghost.sety(ghost.ycor() + 20)
+    elif move_dir == "down":
+        ghost.sety(ghost.ycor() - 20)
+    elif move_dir == "left":
+        ghost.setx(ghost.xcor() - 20)
+    elif move_dir == "right":
+        ghost.setx(ghost.xcor() + 20)
+
+    # Collision with food
+    if pacman.distance(food) < 20:
+        food.goto(random.randint(-280, 280), random.randint(-280, 280))
+
+    # Collision with ghost
+    if pacman.distance(ghost) < 20:
+        print("Game Over!")
+        break
+
+    time.sleep(0.1)
+
+turtle.done()
